@@ -49,8 +49,8 @@ async function main() {
             // commit tree, so when the user retries
             // the gitignore policy is fully enforced
             try {
-                child_process.execSync(`git rm --cached ${large_file}`)
-                child_process.execSync(`git reset ${large_file}`)
+                child_process.execSync(`git rm --cached --ignore-unmatch ${relative_large_file}`)
+                child_process.execSync(`git reset ${relative_large_file}`)
             }
             catch {
                 // failure here simply means the file is not
