@@ -7,15 +7,3 @@ ip2location.mem
 
 # note: added by [LFS_HOOK]:
 main_db.mem
-
-# note: added by [LFS_HOOK]:
-main_db copy.mem
-
-# note: added by [LFS_HOOK]:
-main_db copy 2.mem
-
-# note: added by [LFS_HOOK]:
-main_db_copy.mem
-
-# note: added by [LFS_HOOK]:
-asdasdasdasdasd.mem
