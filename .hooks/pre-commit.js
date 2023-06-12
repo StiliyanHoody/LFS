@@ -26,23 +26,29 @@ function add_ignore_line(ignore_line) {
     let gitignore_path = path.join(ROOT_DIRECTORY, '.gitignore')
     let gitignore = fs.readFileSync(gitignore_path).toString()
     let line_already_exists = gitignore.split('\n').map(line => line.trim()).find(line => line == ignore_line.trim())
-    if(line_already_exists) return
+    if(line_already_exists) return false
     fs.writeFileSync(gitignore_path, gitignore + `\n${ignore_line}\n`)
+    return true
 }
 
 async function main() {
     let lfs_files = await get_all_lfs_files()
 
+    let should_signal_abort_commit = false
+
     for(let large_file of lfs_files) {
         large_file = path.relative(ROOT_DIRECTORY, large_file)
         
         // add the file to git ignore
-        add_ignore_line(large_file)
+        if(add_ignore_line(large_file)) {
+            should_signal_abort_commit = true
+        }
     }
 
-    if(lfs_files.length > 0) {
+    if(should_signal_abort_commit) {
         // we need to signal a failure
         // otherwise the commit will go through
+        console.log('[LFS_HOOK]: Some large files were found and added to git ignore. Please retry.')
         process.exit(1)
     }
 }
