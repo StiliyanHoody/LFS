@@ -1,9 +1,9 @@
 ## How to enable LFS bypassing
 
-In order to bypass LFS policy that github [enforces](https://docs.github.com/en/repositories/working-with-files/managing-large-files/about-git-large-file-storage), 
-I've created a set of [githooks](https://git-scm.com/docs/githooks) linked to a some JS
-scripts that will smartly handle large files and you'll
-still be able to push them to the repository.
+In order to bypass LFS policy that github [enforces](https://docs.github.com/en/repositories/working-with-files/managing-large-files/about-git-large-file-storage), <br>
+I've created a set of [githooks](https://git-scm.com/docs/githooks) linked to a some JS<br>
+scripts that will smartly handle large files and you'll<br>
+still be able to push them to the repository.<br>
 
 To enable this "hack" run the following command:
 
