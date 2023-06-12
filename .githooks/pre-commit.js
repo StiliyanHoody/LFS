@@ -4,8 +4,11 @@ const { join } = require('node:path')
 const path = require('path')
 const fs = require('fs')
 const child_process = require('child_process')
+const crypto = require('crypto')
 
 const ROOT_DIRECTORY = path.join(__dirname, '../')
+const GIT_IGNORE_PATH = path.join(ROOT_DIRECTORY, '.gitignore')
+const LFS_PATH = path.join(__dirname, './LFS')
 
 const walk = async (dir_path) => Promise.all(
   await readdir(dir_path, { withFileTypes: true }).then((entries) => entries.map((entry) => {
@@ -25,12 +28,17 @@ async function get_all_lfs_files() {
 }
 
 function add_ignore_line(ignore_line) {
-    let gitignore_path = path.join(ROOT_DIRECTORY, '.gitignore')
-    let gitignore = fs.readFileSync(gitignore_path).toString()
+    let gitignore = fs.readFileSync(GIT_IGNORE_PATH).toString()
     let line_already_exists = gitignore.split('\n').map(line => line.trim()).find(line => line == ignore_line.trim())
     if(line_already_exists) return false
-    fs.writeFileSync(gitignore_path, gitignore + `\n# note: added by [LFS_HOOK]:\n${ignore_line}\n`)
+    fs.writeFileSync(GIT_IGNORE_PATH, gitignore + `\n# note: added by [LFS_HOOK]:\n${ignore_line}\n`)
     return true
+}
+
+function add_file_to_LFS_folder(relatve_filepath) {
+    const hashed_filename = crypto.createHash('md5').update(relatve_filepath).digest('hex')
+    const file_content = relatve_filepath
+    fs.writeFileSync(path.join(LFS_PATH, hashed_filename), file_content)
 }
 
 async function main() {
@@ -44,6 +52,12 @@ async function main() {
         // add the file to git ignore
         if(add_ignore_line(relative_large_file)) {
             should_signal_abort_commit = true
+
+            // we want to add this file to LFS so that
+            // the other hooks can know what large files
+            // where found in the repo immediately instead
+            // of having to find them again.
+            add_file_to_LFS_folder(relative_large_file)
 
             // we also want to remove it from the
             // commit tree, so when the user retries

@@ -1,0 +1,3 @@
+#!/bin/sh
+
+node .githooks/post-push.js
