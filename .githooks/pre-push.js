@@ -15,6 +15,14 @@ const walk = async (dir_path) => Promise.all(
     }).filter(x => x != undefined)),
 )
 
+function chunkify(buffer) {
+	let i = 0, result = []
+	while (i < buffer.length) {
+		result.push([buffer.slice(i, i += 10**7), result.length])
+	}
+	return result
+}
+
 async function main() {
     // first of all, add all LFS files to a commit and push them
     // without them this script wouldn't work on a clean repo clone.
@@ -25,6 +33,50 @@ async function main() {
     }
     try {
         child_process.execSync(`git commit --no-verify -m "[LFS_HOOK] adding LFS files"`)
+        child_process.execSync(`git push --no-verify --force`)
+    }
+    catch {
+        // error here simply means the files are already
+        // added and pushed. We don't have to push them again.
+    }
+
+    // now we want to take each large file and chunkify it
+    // if it has not been chunkified before.
+    // after that we also want to commit it and push it.
+    let actual_large_files = lfs_hash_files.map(file => 
+        fs.readFileSync(file).toString().trim())
+
+    // note:
+    // `actual_large_files` here represents an array of
+    // the file paths of the large files whitin the current
+    // repo. The file paths are relative to the root of 
+    // the repository. (aka: `ROOT_DIRECTORY`)
+
+    for(let large_file of actual_large_files) {
+        let placeholder_filename = `__LFS__${large_file.replaceAll('\\', '__').replaceAll('/', '__')}`
+        if(fs.existsSync(placeholder_filename)) {
+            continue
+        }
+        fs.mkdirSync(placeholder_filename)
+
+        // todo: 
+        // optimize this to work wihout reading the file into memory
+
+        const large_buffer = fs.readFileSync(large_file)
+        const buffer_chunks = chunkify(large_buffer)
+
+        for(let [chunk, index] of buffer_chunks) {
+            const chunk_filepath = path.join(placeholder_filename, `chunk_${index}.bin`)
+            fs.writeFileSync(chunk_filepath, chunk)
+            
+            const relative_chunk_filepath = path.relative(ROOT_DIRECTORY, chunk_filepath)
+            child_process.execSync(`git add --force ${relative_chunk_filepath}`)
+        }
+    }
+
+    try {
+        child_process.execSync(`git commit --no-verify -m "[LFS_HOOK] adding chunks."`)
+        child_process.execSync(`git push --no-verify --force`)
     }
     catch {
         // error here simply means the files are already
