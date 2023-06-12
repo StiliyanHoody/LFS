@@ -37,6 +37,8 @@ function add_ignore_line(ignore_line) {
     let line_already_exists = gitignore.split('\n').map(line => line.trim()).find(line => line == ignore_line.trim())
     if(line_already_exists) return false
     fs.writeFileSync(GIT_IGNORE_PATH, gitignore + `\n# note: added by [LFS_HOOK]:\n${ignore_line}\n`)
+    // we also want to add it to the current commit
+    child_process.execSync(`git add ${GIT_IGNORE_PATH}`)
     return true
 }
 
