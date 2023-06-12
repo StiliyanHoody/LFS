@@ -23,10 +23,13 @@ async function main() {
         let relative_lfs = path.relative(ROOT_DIRECTORY, lfs_file)
         child_process.execSync(`git add --force ${relative_lfs}`)
     }
-    child_process.execSync(`git commit --no-verify -m "[LFS_HOOK] adding LFS files"`)
-    child_process.execSync(`git push --no-verify`)
-
-
+    try {
+        child_process.execSync(`git commit --no-verify -m "[LFS_HOOK] adding LFS files"`)
+    }
+    catch {
+        // error here simply means the files are already
+        // added and pushed. We don't have to push them again.
+    }
 }
 
 main()
