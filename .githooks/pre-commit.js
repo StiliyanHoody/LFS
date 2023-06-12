@@ -15,7 +15,7 @@ const EXCLUDED_LFS_FILE_DESCRIPTORS = [
 ]
 
 // let's git ignore the LFS folder
-add_ignore_line(LFS_PATH)
+add_ignore_line(path.relative(ROOT_DIRECTORY, LFS_PATH).replace('\\', '/'))
 
 const walk = async (dir_path) => Promise.all(
     await readdir(dir_path, { withFileTypes: true }).then((entries) => entries.map((entry) => {
