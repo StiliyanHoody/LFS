@@ -1,7 +1,9 @@
 const { readdir } = require('node:fs/promises')
 const { join } = require('node:path')
+
 const path = require('path')
 const fs = require('fs')
+const child_process = require('child_process')
 
 const ROOT_DIRECTORY = path.join(__dirname, '../')
 
@@ -42,6 +44,12 @@ async function main() {
         // add the file to git ignore
         if(add_ignore_line(large_file)) {
             should_signal_abort_commit = true
+
+            // we also want to remove it from the
+            // commit tree, so when the user retries
+            // the gitignore policy is fully enforced
+            child_process.execSync(`git rm --cached ${large_file}`)
+            child_process.execSync(`git reset ${large_file}`)
         }
     }
 
