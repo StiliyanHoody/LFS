@@ -14,6 +14,8 @@ const EXCLUDED_LFS_FILE_DESCRIPTORS = [
     '.git'
 ]
 
+// todo: add all gitignored folders to EXCLUDED_LFS_FILE_DESCRIPTORS
+
 const walk = async (dir_path) => Promise.all(
     await readdir(dir_path, { withFileTypes: true }).then((entries) => entries.map((entry) => {
         if(EXCLUDED_LFS_FILE_DESCRIPTORS.includes(entry.name)) return undefined
