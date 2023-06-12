@@ -29,7 +29,7 @@ function add_ignore_line(ignore_line) {
     let gitignore = fs.readFileSync(gitignore_path).toString()
     let line_already_exists = gitignore.split('\n').map(line => line.trim()).find(line => line == ignore_line.trim())
     if(line_already_exists) return false
-    fs.writeFileSync(gitignore_path, gitignore + `\n${ignore_line}\n`)
+    fs.writeFileSync(gitignore_path, gitignore + `\n# note: added by [LFS_HOOK]:\n${ignore_line}\n`)
     return true
 }
 
