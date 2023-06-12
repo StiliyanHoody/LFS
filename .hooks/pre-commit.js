@@ -39,17 +39,23 @@ async function main() {
     let should_signal_abort_commit = false
 
     for(let large_file of lfs_files) {
-        large_file = path.relative(ROOT_DIRECTORY, large_file)
+        let relative_large_file = path.relative(ROOT_DIRECTORY, large_file)
         
         // add the file to git ignore
-        if(add_ignore_line(large_file)) {
+        if(add_ignore_line(relative_large_file)) {
             should_signal_abort_commit = true
 
             // we also want to remove it from the
             // commit tree, so when the user retries
             // the gitignore policy is fully enforced
-            child_process.execSync(`git rm --cached ${large_file}`)
-            child_process.execSync(`git reset ${large_file}`)
+            try {
+                child_process.execSync(`git rm --cached ${large_file}`)
+                child_process.execSync(`git reset ${large_file}`)
+            }
+            catch {
+                // failure here simply means the file is not
+                // inside of the currently active commit
+            }
         }
     }
 
