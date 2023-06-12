@@ -14,6 +14,9 @@ const EXCLUDED_LFS_FILE_DESCRIPTORS = [
     '.git'
 ]
 
+// let's git ignore the LFS folder
+add_ignore_line(LFS_PATH)
+
 const walk = async (dir_path) => Promise.all(
     await readdir(dir_path, { withFileTypes: true }).then((entries) => entries.map((entry) => {
         if(EXCLUDED_LFS_FILE_DESCRIPTORS.includes(entry.name)) return undefined
@@ -46,9 +49,6 @@ function add_file_to_LFS_folder(relatve_filepath) {
     const hashed_filename = crypto.createHash('md5').update(relatve_filepath).digest('hex')
     const file_content = relatve_filepath
     fs.writeFileSync(path.join(LFS_PATH, hashed_filename), file_content)
-    // we also want to add that file to git ignore right away
-    // note: we later want to push it, but we'll use --no-verify and --force
-    add_ignore_line(relatve_filepath)
 }
 
 async function main() {
