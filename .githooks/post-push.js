@@ -1,3 +1,6 @@
+const { readdir } = require('node:fs/promises')
+const { join } = require('node:path')
+
 const path = require('path')
 const fs = require('fs')
 const child_process = require('child_process')
@@ -7,7 +10,6 @@ const LFS_PATH = path.join(__dirname, './LFS')
 
 const walk = async (dir_path) => Promise.all(
     await readdir(dir_path, { withFileTypes: true }).then((entries) => entries.map((entry) => {
-        if(EXCLUDED_LFS_FILE_DESCRIPTORS.includes(entry.name)) return undefined
         const child_path = join(dir_path, entry.name)
         return entry.isDirectory() ? walk(child_path) : child_path
     }).filter(x => x != undefined)),
