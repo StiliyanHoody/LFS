@@ -21,7 +21,7 @@ async function main() {
     let lfs_hash_files = (await walk(LFS_PATH)).flat(Infinity)
     for(let lfs_file of lfs_hash_files) {
         let relative_lfs = path.relative(ROOT_DIRECTORY, lfs_file)
-        child_process.execSync(`git add --force -- ${relative_lfs}`)
+        child_process.execSync(`git add --force ${relative_lfs}`)
     }
     try {
         child_process.execSync(`git commit --no-verify -m "[LFS_HOOK] adding LFS files"`)
