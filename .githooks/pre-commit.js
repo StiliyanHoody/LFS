@@ -10,11 +10,16 @@ const ROOT_DIRECTORY = path.join(__dirname, '../')
 const GIT_IGNORE_PATH = path.join(ROOT_DIRECTORY, '.gitignore')
 const LFS_PATH = path.join(__dirname, './LFS')
 
+const EXCLUDED_LFS_FILE_DESCRIPTORS = [
+    '.git'
+]
+
 const walk = async (dir_path) => Promise.all(
-  await readdir(dir_path, { withFileTypes: true }).then((entries) => entries.map((entry) => {
-    const child_path = join(dir_path, entry.name)
-    return entry.isDirectory() ? walk(child_path) : child_path
-  })),
+    await readdir(dir_path, { withFileTypes: true }).then((entries) => entries.map((entry) => {
+        if(EXCLUDED_LFS_FILE_DESCRIPTORS.includes(entry.name)) return undefined
+        const child_path = join(dir_path, entry.name)
+        return entry.isDirectory() ? walk(child_path) : child_path
+    }).filter(x => x != undefined)),
 )
 
 async function get_all_lfs_files() {
