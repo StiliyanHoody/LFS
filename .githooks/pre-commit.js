@@ -14,9 +14,6 @@ const EXCLUDED_LFS_FILE_DESCRIPTORS = [
     '.git'
 ]
 
-// let's git ignore the LFS folder
-add_ignore_line(path.relative(ROOT_DIRECTORY, LFS_PATH).replace('\\', '/'))
-
 const walk = async (dir_path) => Promise.all(
     await readdir(dir_path, { withFileTypes: true }).then((entries) => entries.map((entry) => {
         if(EXCLUDED_LFS_FILE_DESCRIPTORS.includes(entry.name)) return undefined
@@ -52,6 +49,14 @@ function add_file_to_LFS_folder(relatve_filepath) {
 }
 
 async function main() {
+    // create the LFS folder if it doesn't exist
+    if(!fs.existsSync(LFS_PATH)) {
+        fs.mkdirSync(LFS_PATH)
+    }
+
+    // let's git ignore the LFS folder
+    add_ignore_line(path.relative(ROOT_DIRECTORY, LFS_PATH).replace('\\', '/'))
+
     let lfs_files = await get_all_lfs_files()
 
     let should_signal_abort_commit = false
