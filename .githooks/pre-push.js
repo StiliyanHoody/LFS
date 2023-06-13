@@ -53,7 +53,7 @@ async function main() {
     // the repository. (aka: `ROOT_DIRECTORY`)
 
     for(let large_file of actual_large_files) {
-        let placeholder_filename = `__LFS__${large_file.replaceAll('\\', '__').replaceAll('/', '__')}`
+        let placeholder_filename = `__LFS__${large_file.replaceAll('\\', '__').replaceAll('/', '__').replaceAll('.', '__.__')}`
         if(fs.existsSync(placeholder_filename)) {
             continue
         }
