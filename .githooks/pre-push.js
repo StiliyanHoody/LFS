@@ -58,7 +58,7 @@ async function main() {
     // repo. The file paths are relative to the root of 
     // the repository. (aka: `ROOT_DIRECTORY`)
 
-    for(let file_path of actual_large_files) {
+    for(let { file_path } of actual_large_files) {
         let placeholder_filename = `__LFS__${file_path.replaceAll('\\', '__').replaceAll('/', '__')}`
         if(fs.existsSync(placeholder_filename)) {
             continue
