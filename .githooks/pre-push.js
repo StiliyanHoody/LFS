@@ -43,9 +43,15 @@ async function main() {
     // now we want to take each large file and chunkify it
     // if it has not been chunkified before.
     // after that we also want to commit it and push it.
-    let actual_large_files = lfs_hash_files.map(file => 
-        fs.readFileSync(file).toString().trim())
-
+    let actual_large_files = lfs_hash_files.map(file_path => {
+        let file_contents = fs.readFileSync(file_path).split('\n')
+        return {
+            hash_file_path: file_path,
+            file_path: file_contents[0],
+            file_hash: file_contents[1]
+        }
+    })
+    
     // note:
     // `actual_large_files` here represents an array of
     // the file paths of the large files whitin the current
@@ -53,9 +59,7 @@ async function main() {
     // the repository. (aka: `ROOT_DIRECTORY`)
 
     for(let large_file of actual_large_files) {
-        let placeholder_filename = `__LFS__${large_file.replaceAll('\\', '__').replaceAll('/', '__').replaceAll('.','_')}`
-        placeholder_filename = path.join(ROOT_DIRECTORY, placeholder_filename)
-
+        let placeholder_filename = `__LFS__${large_file.replaceAll('\\', '__').replaceAll('/', '__')}`
         if(fs.existsSync(placeholder_filename)) {
             continue
         }
