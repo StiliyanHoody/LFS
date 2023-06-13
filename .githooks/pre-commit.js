@@ -46,7 +46,8 @@ function add_ignore_line(ignore_line) {
 
 function add_file_to_LFS_folder(relatve_filepath) {
     const hashed_filename = crypto.createHash('md5').update(relatve_filepath).digest('hex')
-    const file_content = relatve_filepath
+    const actual_file_hash = crypto.createHash('sha256').update(fs.readFileSync(relatve_filepath)).digest('hex')
+    const file_content = relatve_filepath + '\n' + actual_file_hash
     fs.writeFileSync(path.join(LFS_PATH, hashed_filename), file_content)
 }
 

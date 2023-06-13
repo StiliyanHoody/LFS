@@ -59,6 +59,11 @@ async function main() {
         }
         fs.mkdirSync(placeholder_filename)
 
+        // the large file doesn't exist here
+        if(!fs.existsSync(large_file)) {
+            continue
+        }
+
         // todo: 
         // optimize this to work wihout reading the file into memory
 

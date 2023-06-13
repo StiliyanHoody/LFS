@@ -1,0 +1,3 @@
+#!/bin/sh
+
+node .githooks/post-merge.js
