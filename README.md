@@ -11,7 +11,7 @@ To enable this "hack" run the following command:
 
 ## Hooks used to achieve this
 
-1. `pre-commit`: *runs before every commit*<br><br>
+1. `pre-commit`: *runs before every commit*<br>
 Whenever you commit changes to the repository<br>
 this hook will find any new large files and add <br>
 them to .gitignore. It will also conditionally<br>
