@@ -58,22 +58,22 @@ async function main() {
     // repo. The file paths are relative to the root of 
     // the repository. (aka: `ROOT_DIRECTORY`)
 
-    for(let large_file of actual_large_files) {
-        let placeholder_filename = `__LFS__${large_file.replaceAll('\\', '__').replaceAll('/', '__')}`
+    for(let file_path of actual_large_files) {
+        let placeholder_filename = `__LFS__${file_path.replaceAll('\\', '__').replaceAll('/', '__')}`
         if(fs.existsSync(placeholder_filename)) {
             continue
         }
         fs.mkdirSync(placeholder_filename)
 
         // the large file doesn't exist here
-        if(!fs.existsSync(large_file)) {
+        if(!fs.existsSync(file_path)) {
             continue
         }
 
         // todo: 
         // optimize this to work wihout reading the file into memory
 
-        const large_buffer = fs.readFileSync(large_file)
+        const large_buffer = fs.readFileSync(file_path)
         const buffer_chunks = chunkify(large_buffer)
 
         for(let [chunk, index] of buffer_chunks) {
