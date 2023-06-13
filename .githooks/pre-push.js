@@ -44,14 +44,14 @@ async function main() {
     // if it has not been chunkified before.
     // after that we also want to commit it and push it.
     let actual_large_files = lfs_hash_files.map(file_path => {
-        let file_contents = fs.readFileSync(file_path).split('\n')
+        let file_contents = fs.readFileSync(file_path).toString().split('\n')
         return {
             hash_file_path: file_path,
             file_path: file_contents[0],
             file_hash: file_contents[1]
         }
     })
-    
+
     // note:
     // `actual_large_files` here represents an array of
     // the file paths of the large files whitin the current

@@ -18,7 +18,7 @@ async function main() {
     // retrieve a list of all large files in the repo
     let lfs_hash_files = (await walk(LFS_PATH)).flat(Infinity)
     let actual_large_files = lfs_hash_files.map(file_path => {
-        let file_contents = fs.readFileSync(file_path).split('\n')
+        let file_contents = fs.readFileSync(file_path).toString().split('\n')
         return {
             hash_file_path: file_path,
             file_path: file_contents[0],
