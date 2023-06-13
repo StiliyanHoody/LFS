@@ -2,3 +2,6 @@
 # note: added by [LFS_HOOK]:
 .githooks/LFS
 
+
+# note: added by [LFS_HOOK]:
+main_db.mem
