@@ -54,6 +54,15 @@ async function main() {
         let all_chunks = []
         let chunk_filepaths = (await walk(placeholder_filename)).flat(Infinity)
 
+        // sort them alphabetically just in-case
+        chunk_filepaths = chunk_filepaths.sort((a, b) => {
+            let a_chunk_name = a.replaceAll('/', '\\').split('\\').pop()
+            let a_index = Number(a_chunk_name.replace('chunk_', '').replace('.bin', ''))
+            let b_chunk_name = b.replaceAll('/', '\\').split('\\').pop()
+            let b_index = Number(b_chunk_name.replace('chunk_', '').replace('.bin', ''))
+            return a_index - b_index
+        })
+
         for(let chunk_filepath of chunk_filepaths) {
             const chunk_buffer = fs.readFileSync(chunk_filepath)
             all_chunks.push(chunk_buffer)
