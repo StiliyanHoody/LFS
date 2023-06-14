@@ -87,7 +87,6 @@ async function main() {
 
     try {
         child_process.execSync(`git commit --no-verify -m "[LFS_HOOK] adding chunks."`)
-        child_process.execSync(`git push --no-verify --force`)
     }
     catch {
         // error here simply means the files are already
