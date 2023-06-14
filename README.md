@@ -36,5 +36,6 @@ It will check every reported large file from by<br>
 `pre-commit` and restore it. <br><br>
 **Note however, when you first clone the repo and <br>
 there's already large files pushed `post-merge` will <br>
-NOT be called by git. You'll have to do `git pull` <br>
-in order for that hook to trigger.**<br>
+NOT be called by git. You'll have to do manually <br>
+execute `node .githooks/post-merge.js` in order for<br> 
+that hook to trigger.**<br>
